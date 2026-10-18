@@ -146,15 +146,16 @@ function renderGrid(){
     .filter(g => !owned || g.owned)
     .filter(g => !n || (g.max && g.max >= n))
     .sort((a,b)=> (n ? Math.abs((a.opt||a.max)-n) - Math.abs((b.opt||b.max)-n) : 0) || b.stars-a.stars || timesPlayed(b.id)-timesPlayed(a.id) || a.name.localeCompare(b.name));
-  $('#grid').innerHTML = list.length ? `<div class="grid">${list.map(g=>`
-    <button class="card glass" data-act="open-game" data-id="${esc(g.id)}">
-      ${cover(g, `<em class="badge ${g.owned?'':'out'}">${g.owned?'En casa':'Jugado fuera'}</em>${incomplete(g)?'<em class="badge todo">Por completar</em>':''}`)}
-      <div class="meta">
+  $('#grid').innerHTML = list.length ? `<div class="shelf glass">${list.map(g=>{const n=timesPlayed(g.id);return `
+    <button class="gi ${g.owned?'':'out'}" data-act="open-game" data-id="${esc(g.id)}">
+      ${cover(g)}
+      <div class="txt">
         <h3>${esc(g.name)}</h3>
-        ${stars(g.stars)}
-        <small class="num">${playersTxt(g)}</small>
+        <div class="sub">${stars(g.stars)}<span class="num">${playersTxt(g)}</span></div>
+        ${!g.owned||incomplete(g)?`<div class="sub">${g.owned?'':'<span class="tagout">Jugado fuera</span>'}${incomplete(g)?'<span class="todo">Por completar</span>':''}</div>`:''}
       </div>
-    </button>`).join('')}</div>`
+      <span class="count"><b class="num">${n}</b>${n===1?'partida':'partidas'}</span>
+    </button>`}).join('')}</div>`
     : `<div class="empty glass">${db.games.length ? 'Ningún juego con estos filtros.' : 'Aún no hay juegos. Añade el primero con el botón «Juego».'}</div>`;
 }
 
